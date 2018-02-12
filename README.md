@@ -131,4 +131,4 @@ Feel free to rant or, even better, fix some of my crappy code through a [pull re
 
 ## Tests
 
-![please](http://galeri2.uludagsozluk.com/342/bitch-please_459292.jpg)
+![tommy](https://raw.githubusercontent.com/odino/docsql/master/images/tommy.png)
