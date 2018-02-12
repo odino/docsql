@@ -126,6 +126,7 @@ Anyhow, it should be fairly straighforward to get running:
 
 * `make build_docker`, will build the docker container used to develop
 * `make test ARGS="go run main.go -d $YOUR_TEST_DOC -t $TABLE -c $MYSQL_CONNECTION_STRING"` will build and run docsql on the fly
+* `make release` when you want to generate a release binary (under `builds/`)
 
 Feel free to rant or, even better, fix some of my crappy code through a [pull request](https://github.com/odino/docsql/pulls)!
 
