@@ -28,6 +28,8 @@ $ docsql \
 2018/02/12 23:20:32 All done
 ```
 
+![example](https://raw.githubusercontent.com/odino/docsql/master/images/doc.png?raw=true)
+
 ![example](https://raw.githubusercontent.com/odino/docsql/master/images/docsql.png?raw=true)
 
 ## Advanced
@@ -123,5 +125,10 @@ the Go toolchain with me!
 Anyhow, it should be fairly straighforward to get running:
 
 * `make build_docker`, will build the docker container used to develop
+* `make test ARGS="go run main.go -d $YOUR_TEST_DOC -t $TABLE -c $MYSQL_CONNECTION_STRING"` will build and run docsql on the fly
 
 Feel free to rant or, even better, fix some of my crappy code through a [pull request](https://github.com/odino/docsql/pulls)!
+
+## Tests
+
+![please](http://galeri2.uludagsozluk.com/342/bitch-please_459292.jpg)

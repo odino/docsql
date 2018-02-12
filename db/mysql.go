@@ -89,11 +89,12 @@ func RenameTables(conn string, newtable string, oldtable string) error {
 
 	defer db.Close()
 
-	log.Printf("Swapping '%s' with '%s'", oldtable, newtable)
 	err = CreateTable(conn, oldtable, []string{})
 	if err != nil {
 		return err
 	}
+
+	log.Printf("Swapping '%s' with '%s'", oldtable, newtable)
 	_, err = db.Query(fmt.Sprintf("RENAME TABLE %s TO %s_archive, %s TO %s", oldtable, newtable, newtable, oldtable))
 	if err != nil {
 		return err
