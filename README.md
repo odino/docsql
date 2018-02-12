@@ -133,3 +133,9 @@ Feel free to rant or, even better, fix some of my crappy code through a [pull re
 ## Tests
 
 ![tommy](https://raw.githubusercontent.com/odino/docsql/master/images/tommy.png)
+
+## Ideas
+
+* if a column ends in `:index` it should be indexed
+* ability to alter the `CREATE TABLE` via flags
+* abort if some basic checks don't pass (ie. minmum number of rows when someone nukes the doc by mistake)
