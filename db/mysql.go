@@ -10,6 +10,9 @@ import (
 	"strings"
 )
 
+// Dummy function used to sanitize column names
+// and avoid funny characters like ` to break
+// the CREATE TABLE statement.
 func sanitize(s string, fallback string) string {
 	reg, err := regexp.Compile("[^a-zA-Z0-9_]+")
 	if err != nil {
@@ -80,6 +83,8 @@ func LoadData(conn string, tablename string, filename string) error {
 	return nil
 }
 
+// We rename / swap tables together so that the operation is atomic.
+// See: https://stackoverflow.com/a/34391961/934439
 func RenameTables(conn string, newtable string, oldtable string) error {
 	log.Printf("Connecting to MySQL...")
 	db, err := sql.Open("mysql", conn)
@@ -103,6 +108,10 @@ func RenameTables(conn string, newtable string, oldtable string) error {
 	return nil
 }
 
+// We need to make sure that everytime docsql runs it takes care of removing
+// old swapped tables, else they'll keep accumulating. Here we fail-safe, in the
+// sense that if there's any issue DROPping the old tables we simply log it, but
+// don't throw any error.
 func DeleteArchiveTables(conn string, table string, keep int) error {
 	log.Printf("Connecting to MySQL...")
 	db, err := sql.Open("mysql", conn)

@@ -16,22 +16,22 @@ import (
 	config "github.com/spf13/viper"
 )
 
-func check(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
+// The root command is responsible for the main docsql magic.
+// - download the TSV
+// - figure out what columns need to be part of the table that's going to be created
+// - CREATE the tmp table
+// - import data into the tmp table
+// - swap the main table with the temp one
+// - delete old archived tables
 var rootCmd = &cobra.Command{
 	Use:   "docsql",
 	Short: "docsql imports a spreadsheet hosted on Google Docs to a MySQL table",
 	Long: `A tool to import Google Docs' spreadhsheets into a MySQL table.
 Have a look at https://github.com/odino/docsql for more info`,
 	Run: func(cmd *cobra.Command, args []string) {
-		tablename := config.GetString("table") + "_" + strconv.FormatInt(time.Now().UnixNano(), 10)
-		filename := tablename + ".csv" // What about ioutil.TempFile?
+		tablename := config.GetString("table") + "_" + strconv.FormatInt(time.Now().UnixNano(), 10) // What about ioutil.TempFile?
+		filename := tablename + ".csv"
 		defer os.Remove(filename)
-		// Download doc
 		err := gdocs.Download(config.GetString("doc"), filename, config.GetInt64("timeout"))
 		util.Check(err)
 
@@ -53,8 +53,6 @@ Have a look at https://github.com/odino/docsql for more info`,
 		}
 
 		log.Printf("All done")
-		// cleanup
-		// minrows
 	},
 }
 

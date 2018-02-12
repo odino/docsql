@@ -7,6 +7,12 @@ import (
 	"io/ioutil"
 )
 
+// WARNING: highly inefficient software ahead!
+//
+// Here we read the whole TSV in order to get the
+// list of columns -- this is not needed at all (it will
+// consume more memory for the lolz) but, realistically,
+// it's midnight and I got no jam left...
 func GetColumns(filename string) ([]string, error) {
 	b, err := ioutil.ReadFile(filename)
 	if err != nil {
