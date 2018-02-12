@@ -28,9 +28,9 @@ $ docsql \
 2018/02/12 23:20:32 All done
 ```
 
-![example](https://raw.githubusercontent.com/odino/docsql/master/images/doc.png?raw=true)
+![doc](https://raw.githubusercontent.com/odino/docsql/master/images/doc.png)
 
-![example](https://raw.githubusercontent.com/odino/docsql/master/images/docsql.png?raw=true)
+![select](https://raw.githubusercontent.com/odino/docsql/master/images/docsql.png)
 
 ## Advanced
 
