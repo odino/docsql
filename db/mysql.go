@@ -3,11 +3,12 @@ package db
 import (
 	"database/sql"
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
 	"log"
 	"regexp"
 	"strconv"
 	"strings"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 // Dummy function used to sanitize column names
@@ -114,15 +115,18 @@ func RenameTables(conn string, newtable string, oldtable string) error {
 // don't throw any error.
 func DeleteArchiveTables(conn string, table string, keep int) error {
 	log.Printf("Connecting to MySQL...")
+	extract, err := extract(conn)
+	if err != nil {
+		return err
+	}
 	db, err := sql.Open("mysql", conn)
 	if err != nil {
 		return err
 	}
-
 	defer db.Close()
 
 	log.Printf("Clearing old tables...")
-	tables, err := db.Query(fmt.Sprintf("SELECT table_name FROM information_schema.tables where table_schema='test' AND table_name LIKE \"%s_%%_archive\" ORDER BY table_name DESC LIMIT 10000 OFFSET %d", table, keep))
+	tables, err := db.Query(fmt.Sprintf("SELECT table_name FROM information_schema.tables where table_schema='%s' AND table_name LIKE \"%s_%%_archive\" ORDER BY table_name DESC LIMIT 10000 OFFSET %d", extract.database, table, keep))
 	if err != nil {
 		return err
 	}
