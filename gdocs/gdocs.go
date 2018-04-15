@@ -1,7 +1,6 @@
 package gdocs
 
 import (
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -9,7 +8,7 @@ import (
 	"time"
 )
 
-// Simply download the doc from the given URL and run a bunch of sanity checks
+// Download Simply download the doc from the given URL and run a bunch of sanity checks
 // before dumping it into the filesystem.
 func Download(url string, filename string, timeout int64) error {
 	log.Println("Downloading", url, "...")
@@ -24,11 +23,11 @@ func Download(url string, filename string, timeout int64) error {
 	}
 
 	if resp.StatusCode != 200 {
-		return errors.New(fmt.Sprintf("Response from the Google Docs URL was %d, expecting 200", resp.StatusCode))
+		return fmt.Errorf("Response from the Google Docs URL was %d, expecting 200", resp.StatusCode)
 	}
 
 	if resp.Header["Content-Type"][0] != "text/tab-separated-values" {
-		return errors.New(fmt.Sprintf("The file we downloaded has content type '%s', while we expected 'text/tab-separated-values'. Are you sure you entered the right URL?", resp.Header["Content-Type"]))
+		return fmt.Errorf("The file we downloaded has content type '%s', while we expected 'text/tab-separated-values'. Are you sure you entered the right URL?", resp.Header["Content-Type"])
 	}
 
 	b, err := ioutil.ReadAll(resp.Body)

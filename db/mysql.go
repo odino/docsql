@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	_ "github.com/go-sql-driver/mysql"
+	mysql "github.com/go-sql-driver/mysql"
 )
 
 // Dummy function used to sanitize column names
@@ -28,7 +28,6 @@ func sanitize(s string, fallback string) string {
 
 	return s
 }
-
 func getCreateTableQuery(tablename string, columns []string) string {
 	cols := []string{}
 
@@ -48,6 +47,7 @@ func getCreateTableQuery(tablename string, columns []string) string {
     `, tablename, strings.Join(cols, " "))
 }
 
+// CreateTable creates a table
 func CreateTable(conn string, tablename string, columns []string) error {
 	log.Printf("Connecting to MySQL...")
 	db, err := sql.Open("mysql", conn)
@@ -66,6 +66,7 @@ func CreateTable(conn string, tablename string, columns []string) error {
 	return nil
 }
 
+// LoadData loads datai from file
 func LoadData(conn string, tablename string, filename string) error {
 	log.Printf("Connecting to MySQL...")
 	db, err := sql.Open("mysql", conn)
@@ -84,7 +85,7 @@ func LoadData(conn string, tablename string, filename string) error {
 	return nil
 }
 
-// We rename / swap tables together so that the operation is atomic.
+// RenameTables We rename / swap tables together so that the operation is atomic.
 // See: https://stackoverflow.com/a/34391961/934439
 func RenameTables(conn string, newtable string, oldtable string) error {
 	log.Printf("Connecting to MySQL...")
@@ -109,24 +110,25 @@ func RenameTables(conn string, newtable string, oldtable string) error {
 	return nil
 }
 
-// We need to make sure that everytime docsql runs it takes care of removing
+// DeleteArchiveTables We need to make sure that everytime docsql runs it takes care of removing
 // old swapped tables, else they'll keep accumulating. Here we fail-safe, in the
 // sense that if there's any issue DROPping the old tables we simply log it, but
 // don't throw any error.
 func DeleteArchiveTables(conn string, table string, keep int) error {
 	log.Printf("Connecting to MySQL...")
-	extract, err := extract(conn)
+	config, err := mysql.ParseDSN(conn)
 	if err != nil {
 		return err
 	}
 	db, err := sql.Open("mysql", conn)
+
 	if err != nil {
 		return err
 	}
 	defer db.Close()
 
 	log.Printf("Clearing old tables...")
-	tables, err := db.Query(fmt.Sprintf("SELECT table_name FROM information_schema.tables where table_schema='%s' AND table_name LIKE \"%s_%%_archive\" ORDER BY table_name DESC LIMIT 10000 OFFSET %d", extract.database, table, keep))
+	tables, err := db.Query(fmt.Sprintf("SELECT table_name FROM information_schema.tables where table_schema='%s' AND table_name LIKE \"%s_%%_archive\" ORDER BY table_name DESC LIMIT 10000 OFFSET %d", config.DBName, table, keep))
 	if err != nil {
 		return err
 	}
